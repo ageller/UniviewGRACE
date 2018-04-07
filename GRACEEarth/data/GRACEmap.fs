@@ -17,6 +17,7 @@ uniform vec4 p1max;
 uniform vec4 p2min;
 uniform vec4 p2max;
 uniform float clim;
+uniform float cmin;
 uniform float t0;
 uniform float tf;
 uniform vec3 minColor;
@@ -70,10 +71,10 @@ void main()
 	cmwe = cmwe;// - cmwe0;
 
 	vec4 GRACEcolor = vec4(centerColor, 1.);
-	if (cmwe > 0.){
-		GRACEcolor.rgb = mix(centerColor, maxColor, clamp(cmwe/clim,0.,1.));
+	if (cmwe > cmin){
+		GRACEcolor.rgb = mix(centerColor, maxColor, clamp(cmwe/clim ,0.,1.));
 	} 
-	if (cmwe < 0.){
+	if (cmwe < cmin){
 		GRACEcolor.rgb = mix(centerColor, minColor, clamp(-1.*cmwe/clim,0.,1.));
 
 	}
