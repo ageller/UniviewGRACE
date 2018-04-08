@@ -19,6 +19,7 @@ uniform vec4 p2max;
 uniform float clim;
 uniform float cmin;
 uniform float t0;
+uniform float tmid;
 uniform float tf;
 uniform vec3 minColor;
 uniform vec3 maxColor;
@@ -48,12 +49,12 @@ void main()
 	float years_0 = 1970. + (uv_simulationtimeDays + dayfract)/yrs;
 	float univYr = clamp(years_0,0.0,13800.0);    
 
-	float t = simUseTime - t0;
+	float t = simUseTime - tmid;
 	if (simBindRealtime){
-		t = univYr - t0;
+		t = univYr - tmid;
 	} 
 	if (simBindLimits){
-		t = clamp(t, 0., tf - t0);
+		t = clamp(t, t0 - tmid, tf - tmid);
 	}
 
 	float f1 = p1.r*pow(t, 3.) + p1.g*pow(t, 2.) + p1.b*t + p1.a;
