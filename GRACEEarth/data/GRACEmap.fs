@@ -23,6 +23,7 @@ uniform float tmid;
 uniform float tf;
 uniform float smoothLength;
 uniform float smoothN;
+uniform float mapcmult;
 
 in vec3 Pos;
 
@@ -49,7 +50,7 @@ vec4 getColor(vec2 TexCoord, vec2 GradTexCoord, float t)
 		f20 = p2.r*sin(2.*PI*(tt0 + p2.g));
 	}
 	float cmwe = f1 + f2;
-	float cmwe0 = f10 + f20;
+	float cmwe0 = f10;// + f20;
 
 	cmwe = cmwe - cmwe0;
 
@@ -69,7 +70,7 @@ void main()
 	vec2 GradTexCoord = vec2 (atan(abs(positionOnUnitSphere.x),positionOnUnitSphere.y)/(2*PI),1-acos(positionOnUnitSphere.z)/PI);
 	GradTexCoord.x += 0.5;
 	vec4 coastLines = textureGrad(coast,TexCoord, dFdx(GradTexCoord), dFdy(GradTexCoord));
-	
+	coastLines.rgb *= mapcmult;
 	
 	float dayfract = uv_simulationtimeSeconds/(24.0*3600.0);
 	float yrs = 365.2425;
@@ -94,10 +95,10 @@ void main()
 		for (int i=0; i<smoothN; i++){
 			for (int j=0; j<smoothN; j++){
 				TexCoord = vec2 (atan(positionOnUnitSphere.x,positionOnUnitSphere.y)/(2*PI)-.25,1-acos(positionOnUnitSphere.z)/PI);
-				TexCoord.x += (i/smoothN - 0.5)*smoothLength;
+				TexCoord.x += (i/smoothN - 0.5)*smoothLength/cos(2.*(TexCoord.y - 0.5) * PI/180.);
 				TexCoord.y += (j/smoothN - 0.5)*smoothLength;
 				GradTexCoord = vec2 (atan(abs(positionOnUnitSphere.x),positionOnUnitSphere.y)/(2*PI),1-acos(positionOnUnitSphere.z)/PI);
-				GradTexCoord.x += (i/smoothN - 0.5)*smoothLength;
+				GradTexCoord.x += (i/smoothN - 0.5)*smoothLength/cos(2.*(GradTexCoord.y - 0.5) * PI/180.);
 				GradTexCoord.y += (j/smoothN - 0.5)*smoothLength;
 		
 				color += getColor(TexCoord, GradTexCoord, t);
